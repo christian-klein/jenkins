@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  jenkins:
+    image: MY.REGISTRY/jenkins:latest
+    container_name: jenkins
+    privileged: true
+    restart: always
+    user: root
+    ports:
+      - 8083:8080
+      - 50003:50000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - type: volume
+        source: jenkins_nfs
+        target: /var/jenkins_home
+        volume:
+          nocopy: true
+volumes:
+  jenkins_nfs:
+    driver_opts:
+      type: "nfs"
+      o: "addr=NFS.SERVER,nolock,soft,rw"
+      device: ":/volume1/docker/jenkins"
+
